@@ -1,0 +1,344 @@
+[
+    {
+        "id": 0,
+        "name": "Bal ajt\u00f3",
+        "pin": 3,
+        "ledCount": 40,
+        "power": true,
+        "animation": 2,
+        "animations": [
+            {
+                "id": 0,
+                "colors": [
+                    {
+                        "position": 0,
+                        "color": "#FF0000"
+                    },
+                    {
+                        "position": 56,
+                        "color": "#EEBB00"
+                    },
+                    {
+                        "position": 100,
+                        "color": "#0000FF"
+                    }
+                ]
+            },
+            {
+                "id": 1,
+                "length": 4,
+                "distance": true,
+                "speed": 10,
+                "colors": [
+                    {
+                        "position": 0,
+                        "color": "#FF0000"
+                    },
+                    {
+                        "position": 100,
+                        "color": "#FF0000"
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "length": 4,
+                "distance": false,
+                "speed": 26,
+                "colors": [
+                    {
+                        "position": 0,
+                        "color": "#FF8F8F"
+                    },
+                    {
+                        "position": 56,
+                        "color": "#EEBB00"
+                    },
+                    {
+                        "position": 99,
+                        "color": "#000000"
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "length": 4,
+                "speed": 1,
+                "colors": [
+                    {
+                        "r": 255,
+                        "g": 0,
+                        "b": 0
+                    },
+                    {
+                        "r": 255,
+                        "g": 255,
+                        "b": 0
+                    }
+                ]
+            },
+            {
+                "id": 100,
+                "decibelThreshold": -20,
+                "fadeOut": 500,
+                "colors": [
+                    {
+                        "r": 255,
+                        "g": 0,
+                        "b": 0
+                    },
+                    {
+                        "r": 255,
+                        "g": 255,
+                        "b": 0
+                    }
+                ]
+            },
+            {
+                "id": 101,
+                "decibelThreshold": -20,
+                "fadeOut": 500,
+                "colors": [
+                    {
+                        "r": 255,
+                        "g": 0,
+                        "b": 0
+                    },
+                    {
+                        "r": 255,
+                        "g": 255,
+                        "b": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 1,
+        "name": "Jobb ajt\u00f3",
+        "pin": 4,
+        "ledCount": 50,
+        "power": false,
+        "animation": 1,
+        "animations": [
+            {
+                "id": 0,
+                "colors": [
+                    {
+                        "position": 0,
+                        "color": "#FF0000"
+                    },
+                    {
+                        "position": 56,
+                        "color": "#EEBB00"
+                    },
+                    {
+                        "position": 100,
+                        "color": "#0000FF"
+                    }
+                ]
+            },
+            {
+                "id": 1,
+                "length": 4,
+                "distance": true,
+                "speed": 10,
+                "colors": [
+                    {
+                        "position": 0,
+                        "color": "#FF0000"
+                    },
+                    {
+                        "position": 100,
+                        "color": "#FF0000"
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "length": 4,
+                "distance": true,
+                "speed": 1,
+                "colors": [
+                    {
+                        "position": 0,
+                        "color": "#FF0000"
+                    },
+                    {
+                        "position": 56,
+                        "color": "#EEBB00"
+                    },
+                    {
+                        "position": 100,
+                        "color": "#0000FF"
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "length": 4,
+                "speed": 1,
+                "colors": [
+                    {
+                        "r": 255,
+                        "g": 0,
+                        "b": 0
+                    },
+                    {
+                        "r": 255,
+                        "g": 255,
+                        "b": 0
+                    }
+                ]
+            },
+            {
+                "id": 100,
+                "decibelThreshold": -20,
+                "fadeOut": 500,
+                "colors": [
+                    {
+                        "r": 255,
+                        "g": 0,
+                        "b": 0
+                    },
+                    {
+                        "r": 255,
+                        "g": 255,
+                        "b": 0
+                    }
+                ]
+            },
+            {
+                "id": 101,
+                "decibelThreshold": -20,
+                "fadeOut": 500,
+                "colors": [
+                    {
+                        "r": 255,
+                        "g": 0,
+                        "b": 0
+                    },
+                    {
+                        "r": 255,
+                        "g": 255,
+                        "b": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "H\u00e1ts\u00f3 \u00fcl\u00e9ssor",
+        "pin": 5,
+        "ledCount": 60,
+        "power": true,
+        "animation": 100,
+        "animations": [
+            {
+                "id": 0,
+                "colors": [
+                    {
+                        "position": 0,
+                        "color": "#FF0000"
+                    },
+                    {
+                        "position": 56,
+                        "color": "#EEBB00"
+                    },
+                    {
+                        "position": 100,
+                        "color": "#0000FF"
+                    }
+                ]
+            },
+            {
+                "id": 1,
+                "length": 4,
+                "distance": true,
+                "speed": 10,
+                "colors": [
+                    {
+                        "position": 0,
+                        "color": "#FF0000"
+                    },
+                    {
+                        "position": 100,
+                        "color": "#FF0000"
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "length": 4,
+                "distance": true,
+                "speed": 1,
+                "colors": [
+                    {
+                        "position": 0,
+                        "color": "#FF0000"
+                    },
+                    {
+                        "position": 56,
+                        "color": "#EEBB00"
+                    },
+                    {
+                        "position": 100,
+                        "color": "#0000FF"
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "length": 4,
+                "speed": 1,
+                "colors": [
+                    {
+                        "r": 255,
+                        "g": 0,
+                        "b": 0
+                    },
+                    {
+                        "r": 255,
+                        "g": 255,
+                        "b": 0
+                    }
+                ]
+            },
+            {
+                "id": 100,
+                "decibelThreshold": -20,
+                "fadeOut": 500,
+                "colors": [
+                    {
+                        "r": 255,
+                        "g": 0,
+                        "b": 0
+                    },
+                    {
+                        "r": 255,
+                        "g": 255,
+                        "b": 0
+                    }
+                ]
+            },
+            {
+                "id": 101,
+                "decibelThreshold": -20,
+                "fadeOut": 500,
+                "colors": [
+                    {
+                        "r": 255,
+                        "g": 0,
+                        "b": 0
+                    },
+                    {
+                        "r": 255,
+                        "g": 255,
+                        "b": 0
+                    }
+                ]
+            }
+        ]
+    }
+]

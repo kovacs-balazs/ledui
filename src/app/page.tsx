@@ -1,103 +1,228 @@
-import Image from "next/image";
+'use client';
+import { useCallback, useEffect, useState } from "react";
+import { LedStrip } from "../../utils/types";
+import { useIsMobile } from "./useIsMobile";
+import Error from "next/error";
+import Footer from "./footer";
+import LedStripsPage from "./LedStripsPage";
+import AnimationsPage from "./animations/AnimationsPage";
+import { createDefaultLedStrip } from "../../utils/defaults";
+/*
+
+text: -neutral-200
+textSecondary: -neutral-300
+line: -blue-800
+
+footer:
+    - ledstrips
+        navbar:
+            - ledstrip box (title, list, add/remove buttons)
+            - ledstrip properties (name, pin, led count)
+    - animations:
+        navbar:
+            - animation box (name)
+            - animation settings (settings)
+    - save button
+
+page:
+    - navbar
+        - current page
+    - footer
+
+ToDo:
+    - error on save button (duplicated name or smth)
+
+*/
+const SELECT_NEW_LEDSTRIP = true;
+
+async function getLedStrips(): Promise<LedStrip[]> {
+    const response = await fetch('/api/ledstrips');
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw { error: errorData.error || 'Unknown Error', message: errorData.message || 'An unknown error occurred.' };
+    }
+    return await response.json();
+}
+
+async function save(ledStrips: LedStrip[]): Promise<void> {
+    console.log("Saving data: " + JSON.stringify(ledStrips))
+    fetch("/api/ledstrips", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(ledStrips)
+    });
+}
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    const [ledStrips, setLedStrips] = useState<LedStrip[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [selectedLedStrip, setSelectedLedStrip] = useState<LedStrip | null>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    const [footer, setFooter] = useState<'leds' | 'animations'>('leds');
+
+    function getNewLedStrip(): LedStrip {
+        const highestId = ledStrips.length > 0
+            ? Math.max(...ledStrips.map(strip => strip.id))
+            : -1;
+        return createDefaultLedStrip(highestId + 1);
+    }
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const ledStripsData = await getLedStrips();
+                setLedStrips(ledStripsData);
+                if (ledStripsData.length > 0) {
+                    setSelectedLedStrip(ledStripsData[0]);
+                }
+                setError(null);
+            } catch (err) {
+                setError((err as Error).message);
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const toggleLedStripPower = (ledStrip: LedStrip) => {
+        ledStrip.power = !ledStrip.power;
+        changeProperty(ledStrip);
+    };
+
+    const changePropertyCallback = useCallback((ledStrip: LedStrip) => {
+        //if (!selectedLedStrip) return;
+        setLedStrips(prev =>
+            prev.map(strip =>
+                strip.id === ledStrip.id ? ledStrip : strip
+            )
+        );
+    }, []);
+
+    const changeProperty = (ledStrip: LedStrip) => {
+        //if (!selectedLedStrip) return;
+        setLedStrips(prev =>
+            prev.map(strip =>
+                strip.id === ledStrip.id ? ledStrip : strip
+            )
+        );
+    };
+
+    const addNewLedStrip = () => {
+        const newLedStrip = getNewLedStrip();
+        setLedStrips(prev => [...prev, newLedStrip]);
+        if (!selectedLedStrip) {
+            setSelectedLedStrip(newLedStrip);
+        }
+    }
+
+    const removeSelectedLedStrip = () => {
+        if (!selectedLedStrip) return;
+        setLedStrips(prev => {
+            let selectedIndex = 0;
+            let counter = 0;
+            const newList = prev.filter(strip => {
+                if (strip.id !== selectedLedStrip.id) {
+                    counter++;
+                    return true;
+                }
+                selectedIndex = counter;
+            });
+
+            if (SELECT_NEW_LEDSTRIP) {
+                if (newList.length > 0) {
+                    setSelectedLedStrip(newList[Math.min(selectedIndex, newList.length - 1)]);
+                } else {
+                    setSelectedLedStrip(null);
+                }
+            } else {
+                setSelectedLedStrip(null);
+            }
+
+            return newList;
+        });
+    }
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
+
+    // <div className="sm:flex gap-30 sm:ml-28 mt-14">
+    //             {/* BAL PANEL - LED STRIP BOX */}
+    //             <div className="">
+    //                 <LedStripBox
+    //                     ledStrips={ledStrips}
+    //                     selectedLedStrip={selectedLedStrip}
+    //                     onPowerToggle={toggleLedStripPower}
+    //                     onSelect={setSelectedLedStrip}
+    //                     onAdd={addNewLedStrip}
+    //                     onRemove={removeSelectedLedStrip}
+    //                     className="flex-shrink-0"
+    //                 />
+    //             </div>
+
+    //             {/* KÖZÉPSŐ PANEL - PROPERTIES, SAVE */}
+    //             {selectedLedStrip && (
+    //                 <div className="">
+    //                     <LedStripProperties ledStrip={selectedLedStrip} onChange={changeProperty} className="mt-10" />
+    //                 </div>
+    //             )}
+    //             {!isMobile && (
+    //                 <div className="">
+    //                     <SaveButton onClick={() => console.log("Save data")} />
+    //                 </div>
+    //             )}
+
+    //             {/* JOBB PANEL - ANIMÁCIÓK */}
+    //             <div>
+    //                 {selectedLedStrip && (
+    //                     <div className="">
+    //                         <AnimationBox ledStrip={selectedLedStrip} onChange={(animation) => console.log("Changed: " + animation.id)} className="mt-10 sm:mt-0" />
+    //                     </div>
+    //                 )}
+    //             </div>
+    //         </div>
+    //
+    // md:bg-none md:bg-gray-950 
+    return (
+        <div className="bg-gradient-to-br from-gray-800 to-gray-950 w-screen h-[100dvh] overflow-hidden">
+            <div className="flex justify-center w-screen h-[calc(100dvh+1px)] overflow-y-auto overscroll-contain">
+                <div className="flex max-w-150 w-full flex-col pb-20">
+                    {footer === 'leds' && (
+                        <LedStripsPage
+                            ledStrips={ledStrips}
+                            selectedLedStrip={selectedLedStrip}
+                            onPowerToggle={toggleLedStripPower}
+                            onSelect={setSelectedLedStrip}
+                            onAdd={addNewLedStrip}
+                            onRemove={removeSelectedLedStrip}
+                            onChange={changeProperty}
+                        />
+                    )}
+
+                    {selectedLedStrip && footer === 'animations' && (
+                        <AnimationsPage
+                            selectedLedStrip={selectedLedStrip}
+                            onSelect={(animation) => {
+                                selectedLedStrip.animation = animation.id
+                                changeProperty(selectedLedStrip);
+                            }}
+                            onChange={(animation) => {
+                                changePropertyCallback(selectedLedStrip);
+                            }}
+                        />
+                    )}
+
+
+                    <Footer options={[
+                        { name: "LED", isSelected: footer === 'leds', onClick: () => { setFooter("leds") } },
+                        { name: "Animations", isSelected: footer === 'animations', onClick: () => { setFooter("animations") } },
+                        { name: "Save", isSelected: false, onClick: () => { console.log("Save data"); save(ledStrips) }, isActionButton: true }
+                    ]} />
+                </div>
+            </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+    );
 }
