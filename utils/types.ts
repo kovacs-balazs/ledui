@@ -1,8 +1,5 @@
-import { ListenOptions } from "net";
-
 export interface Animation {
     id: number;
-    colors: GradientStop[];
 }
 
 export interface RGBColor {
@@ -36,7 +33,10 @@ export interface WaveAnimation extends Animation {
     length: number;
     distance: boolean;
     speed: number;
-    colors: GradientStop[];
+    colors: {
+        foreground: GradientStop[];
+        background: GradientStop[];
+    };
 }
 
 export interface ReverseWaveAnimation extends Animation {

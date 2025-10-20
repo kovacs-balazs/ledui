@@ -6,7 +6,7 @@ export default function GradientBorder({ children }: GradientBorderProps) {
     return (
         <div className="relative w-full h-full">
             <div
-                className="absolute inset-1 rounded-xl z-0"
+                className="absolute inset-0 rounded-xl z-0 w-full"
                 style={{
                     padding: '2px',
                     background: 'linear-gradient(to bottom right, #3b82f6, #8b5cf6)',

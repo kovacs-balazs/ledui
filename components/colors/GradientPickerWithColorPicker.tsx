@@ -2,7 +2,7 @@
 'use client';
 
 import Color from 'color';
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { GradientStop, RGBColor, HSVColor } from '../../utils/types';
 
 
@@ -584,19 +584,26 @@ const hexToHsv = (hex: string, roundValues: boolean = false): HSVColor => {
 
 // Custom hook for gradient picker functionality
 const useGradientPicker = (initialGradients?: GradientStop[], onChange?: (gradients: GradientStop[]) => void) => {
-    const [stops, setStops] = useState<GradientStop[]>(
-        initialGradients && initialGradients.length >= 2
+    const initialStops = useMemo(() => {
+        console.log("Recalculating initialStops with:", initialGradients);
+        return initialGradients && initialGradients.length >= 2
             ? [...initialGradients]
             : [
                 { color: '#FF0000', position: 0 },
                 { color: '#0000FF', position: 100 },
-            ]
-    );
+            ];
+    }, [initialGradients]);
+    const [stops, setStops] = useState<GradientStop[]>(initialStops);
 
     const [selectedStopIndex, setSelectedStopIndex] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
 
     const gradientBarRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        setStops(initialStops);
+        setSelectedStopIndex(0);
+    }, [initialStops]);
 
     // Update stop color
     const updateStopColor = useCallback((color: string) => {

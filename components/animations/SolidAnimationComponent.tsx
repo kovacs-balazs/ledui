@@ -1,8 +1,5 @@
-import { hexToHsv, hsvObjToHex } from "../../utils/colors";
 import { SolidAnimation } from "../../utils/types";
-import ColorPicker from "../colors/ColorPicker";
 import ColorPickerSwitcher from "../colors/ColorPickerSwitcher";
-import GradientPickerWithColorPicker from "../colors/GradientPickerWithColorPicker";
 
 
 interface SolidAnimationComponentProps {
@@ -17,7 +14,11 @@ export default function SolidAnimationComponent({
     return (
         <div className="flex mt-4 w-full justify-center">
             <div className="w-[85%]">
-                <ColorPickerSwitcher background={false} animation={animation} />
+                <ColorPickerSwitcher background={false} colors={animation.colors} onChange={(stops) => {
+                    console.log("SAVE")
+                    animation.colors = stops;
+                    onChange(animation);
+                }} />
             </div>
         </div>
     )

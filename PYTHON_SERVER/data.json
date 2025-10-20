@@ -5,7 +5,7 @@
         "pin": 3,
         "ledCount": 40,
         "power": true,
-        "animation": 2,
+        "animation": 0,
         "animations": [
             {
                 "id": 0,
@@ -13,10 +13,6 @@
                     {
                         "position": 0,
                         "color": "#FF0000"
-                    },
-                    {
-                        "position": 56,
-                        "color": "#EEBB00"
                     },
                     {
                         "position": 100,
@@ -29,6 +25,38 @@
                 "length": 4,
                 "distance": true,
                 "speed": 10,
+                "colors": {
+                    "foreground": [
+                        {
+                            "position": 0,
+                            "color": "#FF0000"
+                        },
+                        {
+                            "position": 100,
+                            "color": "#FF0000"
+                        }
+                    ],
+                    "background": [
+                        {
+                            "position": 0,
+                            "color": "#00FF00"
+                        },
+                        {
+                            "position": 50,
+                            "color": "#FF0000"
+                        },
+                        {
+                            "position": 100,
+                            "color": "#FF00FF"
+                        }
+                    ]
+                }
+            },
+            {
+                "id": 2,
+                "length": 4,
+                "distance": true,
+                "speed": 1,
                 "colors": [
                     {
                         "position": 0,
@@ -36,27 +64,7 @@
                     },
                     {
                         "position": 100,
-                        "color": "#FF0000"
-                    }
-                ]
-            },
-            {
-                "id": 2,
-                "length": 4,
-                "distance": false,
-                "speed": 26,
-                "colors": [
-                    {
-                        "position": 0,
-                        "color": "#FF8F8F"
-                    },
-                    {
-                        "position": 56,
-                        "color": "#EEBB00"
-                    },
-                    {
-                        "position": 99,
-                        "color": "#000000"
+                        "color": "#0000FF"
                     }
                 ]
             },
@@ -66,14 +74,12 @@
                 "speed": 1,
                 "colors": [
                     {
-                        "r": 255,
-                        "g": 0,
-                        "b": 0
+                        "position": 0,
+                        "color": "#FF0000"
                     },
                     {
-                        "r": 255,
-                        "g": 255,
-                        "b": 0
+                        "position": 100,
+                        "color": "#FF0000"
                     }
                 ]
             },
@@ -129,10 +135,6 @@
                         "color": "#FF0000"
                     },
                     {
-                        "position": 56,
-                        "color": "#EEBB00"
-                    },
-                    {
                         "position": 100,
                         "color": "#0000FF"
                     }
@@ -143,16 +145,32 @@
                 "length": 4,
                 "distance": true,
                 "speed": 10,
-                "colors": [
-                    {
-                        "position": 0,
-                        "color": "#FF0000"
-                    },
-                    {
-                        "position": 100,
-                        "color": "#FF0000"
-                    }
-                ]
+                "colors": {
+                    "foreground": [
+                        {
+                            "position": 0,
+                            "color": "#FF0000"
+                        },
+                        {
+                            "position": 100,
+                            "color": "#FF0000"
+                        }
+                    ],
+                    "background": [
+                        {
+                            "position": 0,
+                            "color": "#00FF00"
+                        },
+                        {
+                            "position": 50,
+                            "color": "#FF0000"
+                        },
+                        {
+                            "position": 100,
+                            "color": "#FF00FF"
+                        }
+                    ]
+                }
             },
             {
                 "id": 2,
@@ -163,10 +181,6 @@
                     {
                         "position": 0,
                         "color": "#FF0000"
-                    },
-                    {
-                        "position": 56,
-                        "color": "#EEBB00"
                     },
                     {
                         "position": 100,
@@ -180,14 +194,12 @@
                 "speed": 1,
                 "colors": [
                     {
-                        "r": 255,
-                        "g": 0,
-                        "b": 0
+                        "position": 0,
+                        "color": "#FF0000"
                     },
                     {
-                        "r": 255,
-                        "g": 255,
-                        "b": 0
+                        "position": 100,
+                        "color": "#FF0000"
                     }
                 ]
             },
@@ -243,10 +255,6 @@
                         "color": "#FF0000"
                     },
                     {
-                        "position": 56,
-                        "color": "#EEBB00"
-                    },
-                    {
                         "position": 100,
                         "color": "#0000FF"
                     }
@@ -257,16 +265,32 @@
                 "length": 4,
                 "distance": true,
                 "speed": 10,
-                "colors": [
-                    {
-                        "position": 0,
-                        "color": "#FF0000"
-                    },
-                    {
-                        "position": 100,
-                        "color": "#FF0000"
-                    }
-                ]
+                "colors": {
+                    "foreground": [
+                        {
+                            "position": 0,
+                            "color": "#FF0000"
+                        },
+                        {
+                            "position": 100,
+                            "color": "#FF0000"
+                        }
+                    ],
+                    "background": [
+                        {
+                            "position": 0,
+                            "color": "#00FF00"
+                        },
+                        {
+                            "position": 50,
+                            "color": "#FF0000"
+                        },
+                        {
+                            "position": 100,
+                            "color": "#FF00FF"
+                        }
+                    ]
+                }
             },
             {
                 "id": 2,
@@ -277,10 +301,6 @@
                     {
                         "position": 0,
                         "color": "#FF0000"
-                    },
-                    {
-                        "position": 56,
-                        "color": "#EEBB00"
                     },
                     {
                         "position": 100,
@@ -294,14 +314,12 @@
                 "speed": 1,
                 "colors": [
                     {
-                        "r": 255,
-                        "g": 0,
-                        "b": 0
+                        "position": 0,
+                        "color": "#FF0000"
                     },
                     {
-                        "r": 255,
-                        "g": 255,
-                        "b": 0
+                        "position": 100,
+                        "color": "#FF0000"
                     }
                 ]
             },

@@ -1,13 +1,23 @@
 // components/ColorPicker.tsx
-import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { HSVColor, RGBColor } from '../../utils/types';
+import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
+import { GradientStop, HSVColor, RGBColor } from '../../utils/types';
 import { hexToHsv, hexToRgb, hsvToRgb, rgbToHex } from '../../utils/colors';
 
 // Custom hook a color pickerhez
 const useColorPicker = (initialColor: HSVColor = { h: 0, s: 100, v: 100 }) => {
-    const [color, setColor] = useState<HSVColor>(initialColor);
+    const stableInitialColor = useMemo(() => initialColor, [
+        initialColor.h,
+        initialColor.s,
+        initialColor.v
+    ]);
+
+    const [color, setColor] = useState<HSVColor>(stableInitialColor);
     const isDraggingRef = useRef(false);
     const rafIdRef = useRef<number | null>(null);
+
+    useEffect(() => {
+        setColor(initialColor);
+    }, [initialColor.h, initialColor.s, initialColor.v]);
 
     // Debounced color update requestAnimationFrame-el
     const updateColor = useCallback((newColor: Partial<HSVColor>) => {
@@ -53,37 +63,6 @@ const useColorPicker = (initialColor: HSVColor = { h: 0, s: 100, v: 100 }) => {
         handleColorChange
     };
 };
-
-// Touch event kezelés
-// const useTouchEvents = (
-//     onStart: () => void,
-//     onMove: (clientX: number, clientY: number) => void,
-//     onEnd: () => void
-// ) => {
-//     const handleTouchStart = useCallback((e: React.TouchEvent | TouchEvent) => {
-//         e.preventDefault();
-//         onStart();
-//     }, [onStart]);
-
-//     const handleTouchMove = useCallback((e: React.TouchEvent | TouchEvent) => {
-//         e.preventDefault();
-//         const touch = e.touches[0];
-//         if (touch) {
-//             onMove(touch.clientX, touch.clientY);
-//         }
-//     }, [onMove]);
-
-//     const handleTouchEnd = useCallback((e: React.TouchEvent | TouchEvent) => {
-//         e.preventDefault();
-//         onEnd();
-//     }, [onEnd]);
-
-//     return {
-//         handleTouchStart,
-//         handleTouchMove,
-//         handleTouchEnd
-//     };
-// };
 
 // Hue Slider Komponens
 interface HueSliderProps {
@@ -318,7 +297,7 @@ const SaturationBrightnessPicker: React.FC<SaturationBrightnessPickerProps> = ({
 interface ColorPickerProps {
     background?: boolean;
     initialColor?: HSVColor;
-    onChange?: (color: HSVColor, rgb: RGBColor, hex: string) => void;
+    onChange?: (stops: GradientStop[]) => void;
 }
 
 export const ColorPicker: React.FC<ColorPickerProps> = ({
@@ -343,11 +322,11 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
         setHexInputValue(hexColor);
     }, [hexColor]);
 
-
-    // Call onChange callback when color changes
-    useEffect(() => {
-        onChange?.(color, rgbColor, hexColor);
-    }, [color, rgbColor, hexColor, onChange]);
+    // Helper function to trigger onChange
+    const triggerOnChange = useCallback((newColor: HSVColor, newRgb: RGBColor, newHex: string) => {
+        // onChange?.(newColor, newRgb, newHex);
+        onChange?.([{"position": 0, "color": newHex}, {"position": 100, "color": newHex}]);
+    }, [onChange]);
 
     const handleRChange = useCallback((r: number) => {
         if (isNaN(r))
@@ -356,10 +335,8 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
         const newRgb = { ...rgbColor, r };
         const newHsv = hexToHsv(rgbToHex(newRgb.r, newRgb.g, newRgb.b));
         setColor(newHsv);
-        if (onChange) {
-            onChange(newHsv, newRgb, rgbToHex(newRgb.r, newRgb.g, newRgb.b));
-        }
-    }, [rgbColor, onChange, setColor]);
+        triggerOnChange(newHsv, newRgb, rgbToHex(newRgb.r, newRgb.g, newRgb.b));
+    }, [rgbColor, triggerOnChange, setColor]);
 
     const handleGChange = useCallback((g: number) => {
         if (isNaN(g))
@@ -368,10 +345,8 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
         const newRgb = { ...rgbColor, g };
         const newHsv = hexToHsv(rgbToHex(newRgb.r, newRgb.g, newRgb.b));
         setColor(newHsv);
-        if (onChange) {
-            onChange(newHsv, newRgb, rgbToHex(newRgb.r, newRgb.g, newRgb.b));
-        }
-    }, [rgbColor, onChange, setColor]);
+        triggerOnChange(newHsv, newRgb, rgbToHex(newRgb.r, newRgb.g, newRgb.b));
+    }, [rgbColor, triggerOnChange, setColor]);
 
     const handleBChange = useCallback((b: number) => {
         if (isNaN(b))
@@ -380,20 +355,14 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
         const newRgb = { ...rgbColor, b };
         const newHsv = hexToHsv(rgbToHex(newRgb.r, newRgb.g, newRgb.b));
         setColor(newHsv);
-        if (onChange) {
-            onChange(newHsv, newRgb, rgbToHex(newRgb.r, newRgb.g, newRgb.b));
-        }
-    }, [rgbColor, onChange, setColor]);
+        triggerOnChange(newHsv, newRgb, rgbToHex(newRgb.r, newRgb.g, newRgb.b));
+    }, [rgbColor, triggerOnChange, setColor]);
 
     // HEX input handler
     const handleHexChange = useCallback((hex: string) => {
-        // Update local input state immediately to allow typing
         let newHex = hex.startsWith('#') ? hex : `#${hex}`;
-
-        // Remove any non-hex characters
         newHex = newHex.replace(/[^#0-9A-Fa-f]/g, '').trim().toUpperCase();
 
-        // Limit to 7 characters (# + 6 hex digits)
         if (newHex.length > 7) {
             newHex = newHex.substring(0, 7);
         }
@@ -404,14 +373,29 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
             if (rgb) {
                 const newHsv = hexToHsv(newHex);
                 setColor(newHsv);
-                if (onChange) {
-                    onChange(newHsv, rgb, newHex);
-                }
+                triggerOnChange(newHsv, rgb, newHex);
             }
         }
-    }, [onChange, setColor]);
+    }, [triggerOnChange, setColor]);
+
+    const handleHueChange = useCallback((h: number) => {
+        const newColor = { ...color, h };
+        const newRgb = hsvToRgb(newColor.h, newColor.s, newColor.v);
+        const newHex = rgbToHex(newRgb.r, newRgb.g, newRgb.b);
+        handleColorChange({ h });
+        triggerOnChange(newColor, newRgb, newHex);
+    }, [color, handleColorChange, triggerOnChange]);
+
+    const handleSaturationBrightnessChange = useCallback((s: number, v: number) => {
+        const newColor = { ...color, s, v };
+        const newRgb = hsvToRgb(newColor.h, newColor.s, newColor.v);
+        const newHex = rgbToHex(newRgb.r, newRgb.g, newRgb.b);
+        handleColorChange({ s, v });
+        triggerOnChange(newColor, newRgb, newHex);
+    }, [color, handleColorChange, triggerOnChange]);
 
     const backgroundString = background ? "bg-gradient-to-br from-neutral-700/80 to-gray-800/50" : "bg-transparent"
+
     return (
         <div className={`flex flex-col gap-4 pb-4 rounded-lg shadow-md max-w-md mx-auto ${backgroundString} h-fit`}>
             <div className="flex justify-center items-center gap-3">
@@ -422,30 +406,26 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
             </div>
 
             <div className="relative">
-                {/* Saturation & Brightness Picker */}
                 <SaturationBrightnessPicker
                     hue={color.h}
                     saturation={color.s}
                     brightness={color.v}
-                    onSaturationBrightnessChange={(s, v) => handleColorChange({ s, v })}
+                    onSaturationBrightnessChange={handleSaturationBrightnessChange}
                     onDragStart={startDrag}
                     onDragEnd={endDrag}
                 />
             </div>
 
             <div className="relative">
-                {/* Hue Slider */}
                 <HueSlider
                     hue={color.h}
-                    onHueChange={(h) => handleColorChange({ h })}
+                    onHueChange={handleHueChange}
                     onDragStart={startDrag}
                     onDragEnd={endDrag}
                 />
             </div>
 
-            {/* Numerikus inputok */}
             <div className="flex flex-row justify-around gap-2">
-                {/* HEX Input - Larger width */}
                 <div className="flex flex-col items-center w-20 mr-6">
                     <input
                         type="text"
@@ -457,7 +437,6 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
                     <label className="text-xs font-medium text-neutral-300 mt-1">HEX</label>
                 </div>
 
-                {/* Red Input */}
                 <div className="flex flex-col items-center w-12">
                     <input
                         type="number"
@@ -470,7 +449,6 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
                     <label className="text-xs font-medium text-neutral-300 mt-1">R</label>
                 </div>
 
-                {/* Green Input */}
                 <div className="flex flex-col items-center w-12">
                     <input
                         type="number"
@@ -483,7 +461,6 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
                     <label className="text-xs font-medium text-neutral-300 mt-1">G</label>
                 </div>
 
-                {/* Blue Input */}
                 <div className="flex flex-col items-center w-12">
                     <input
                         type="number"
@@ -496,7 +473,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
                     <label className="text-xs font-medium text-neutral-300 mt-1">B</label>
                 </div>
             </div>
-        </div >
+        </div>
     );
 };
 

@@ -17,7 +17,23 @@ default_gradients = [
         }
 ]
 
-default_gradients = [
+default_gradients_2 = [
+    {
+            "position": 0,
+            "color": "#00FF00"
+        },
+    
+        {
+            "position": 50,
+            "color": "#FF0000"
+        },
+        {
+            "position": 100,
+            "color": "#FF00FF"
+        }
+]
+
+default_gradients_3 = [
         {
             "position": 0,
             "color": "#FF0000"
@@ -53,7 +69,10 @@ wave_animation = {
     "length": 4,
     "distance": True,
     "speed": 10,
-    "colors": single_color_gradients
+    "colors": {
+        "foreground": single_color_gradients,
+        "background": default_gradients_2   
+    }
 }
 
 reverse_wave_animation = {
@@ -209,3 +228,16 @@ async def get():
             ]
         }
     ]
+
+@app.get("/api/bluetooth/connect")
+async def connect(device: str):
+    print(f"Connect to device {device}")
+    return device
+
+@app.get("/api/bluetooth/disconnect")
+async def connect():
+    print("Disconnected current device")
+
+@app.get("/api/bluetooth/devices")
+async def get():
+    return ["Device 1", "Device 2"]

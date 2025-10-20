@@ -1,5 +1,5 @@
 import { WaveAnimation } from "../../utils/types";
-import ColorPickerSwitcher from "../colors/ColorPickerSwitcher";
+import ColorTypeSelector from "../colors/ColorTypeSelector";
 import NumberInputBox from "../NumberInputBox";
 import PremiumCheckBox from "../PremiumCheckBox";
 import Slider from "../Slider";
@@ -35,11 +35,8 @@ export default function WaveAnimationComponent({
                 <Slider label="Speed" min={0} max={100} value={animation.speed} onChange={(value) => animation.speed = value} />
             </div>
 
-            <div className="flex w-[85%] justify-center">
-                {/* <BottomMenu>
-                    <ColorPickerSwitcher background={false} animation={animation} />
-                </BottomMenu> */}
-                <ColorPickerSwitcher background={false} animation={animation} />
+            <div className="flex w-full justify-center">
+                <ColorTypeSelector animation={animation} options={Object.keys(animation.colors)} />
             </div>
         </div>
     )

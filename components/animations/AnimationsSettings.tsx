@@ -30,7 +30,7 @@ export default function AnimationsSettings({
         <div className={`w-[full] h-full overflow-hidden${className}`}>
 
             {/* Content Area — responsive padding p-4 sm:p-6 */}
-            <div className="flex flex-col relative px-4 md:px-6 h-[calc(100dvh-11.65rem)] w-[90%] mx-auto overflow-scroll hide-scrollbar">
+            <div className="flex flex-col relative px-4 md:px-6 h-[calc(100dvh-11.7rem)] mx-auto w-[90%] overflow-scroll hide-scrollbar pb-4">
                 {selectedAnimation.id === 0 && (
                     <SolidAnimationComponent animation={selectedAnimation} onChange={onChange} />
                 )}
