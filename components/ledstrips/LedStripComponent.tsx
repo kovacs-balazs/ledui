@@ -39,7 +39,7 @@ export default function LedStripComponent({
 
 			{/* Selected background */}
 			{selected && (
-				<div className="absolute top-0 left-0 right-0 bottom-0 bg-cyan-400/20  rounded-md z-0 pointer-events-none" />
+				<div className="absolute top-0 left-0 right-0 bottom-0 bg-cyan-400/20 rounded-md z-0 pointer-events-none" />
 			)}
 
 			{/* Vertical Line */}

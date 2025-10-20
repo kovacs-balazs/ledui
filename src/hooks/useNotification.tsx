@@ -1,45 +1,81 @@
 // hooks/useNotification.ts
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
-interface NotificationState {
-    isVisible: boolean;
-    message: string;
-    type: 'success' | 'error' | 'warning' | 'info';
+interface Notification {
+    id: number;
+    content: string;
+    type: string;
+    duration?: number;
 }
 
-export const useNotification = () => {
-    const [notification, setNotification] = useState<NotificationState>({
-        isVisible: false,
-        message: '',
-        type: 'info',
-    });
+// Singleton to manage notifications outside React
+class NotificationManager {
+    private listeners: Array<(notifications: Notification[]) => void> = [];
+    private notifications: Notification[] = [];
 
-    const showNotification = useCallback((
-        message: string,
-        type: NotificationState['type'] = 'info',
-    ) => {
-        setNotification({
-            isVisible: true,
-            message,
+    subscribe(listener: (notifications: Notification[]) => void) {
+        this.listeners.push(listener);
+        return () => {
+            this.listeners = this.listeners.filter(l => l !== listener);
+        };
+    }
+
+    private notify() {
+        this.listeners.forEach(listener => listener([...this.notifications]));
+    }
+
+    addNotification(content: string, type = 'info', duration = 3000) {
+        const id = Date.now();
+        const newNotification: Notification = {
+            content,
             type,
-        });
+            id,
+            duration
+        };
+
+        this.notifications.push(newNotification);
+        this.notify();
+
+        // Auto-remove after duration
+        setTimeout(() => {
+            this.removeNotification(id);
+        }, duration + 500);
+    }
+
+    removeNotification(id: number) {
+        this.notifications = this.notifications.filter(notification => notification.id !== id);
+        this.notify();
+    }
+}
+
+// Single instance
+const notificationManager = new NotificationManager();
+
+// Hook for components that want to SHOW notifications
+export const useNotificationDisplay = () => {
+    const [notifications, setNotifications] = useState<Notification[]>([]);
+
+    useEffect(() => {
+        return notificationManager.subscribe(setNotifications);
     }, []);
 
-    const hideNotification = useCallback(() => {
-        setNotification(prev => ({ ...prev, isVisible: false }));
+    const removeNotification = useCallback((id: number) => {
+        notificationManager.removeNotification(id);
     }, []);
-
-    // Memoize the notification props to prevent unnecessary re-renders
-    const notificationProps = useMemo(() => ({
-        isVisible: notification.isVisible,
-        message: notification.message,
-        type: notification.type,
-        onClose: hideNotification
-    }), [notification, hideNotification]);
 
     return {
-        showNotification,
-        hideNotification,
-        notificationProps
+        notifications,
+        removeNotification,
+    };
+};
+
+// Hook for components that want to ADD notifications
+export const useNotification = () => {
+    const addNotification = useCallback((content: string, type = 'info', duration = 3000) => {
+        notificationManager.addNotification(content, type, duration);
+    }, []);
+
+    return {
+        addNotification,
     };
 };

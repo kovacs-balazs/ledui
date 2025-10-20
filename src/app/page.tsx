@@ -1,15 +1,14 @@
 'use client';
 import { useCallback, useEffect, useState } from "react";
 import { LedStrip } from "../../utils/types";
-import { useIsMobile } from "./useIsMobile";
 import Error from "next/error";
 import Footer from "./footer";
 import LedStripsPage from "./LedStripsPage";
 import AnimationsPage from "./animations/AnimationsPage";
 import { createDefaultLedStrip } from "../../utils/defaults";
 import SettingsPage from "./settings/SettingsPage";
-import { useNotification } from "@/hooks/useNotification";
-import NotificationPopup from "../../components/NotificationPopup";
+import { useNotification } from "../hooks/useNotification";
+import NotificationContainer from "../../components/NotificationContainer";
 /*
 
 text: -neutral-200
@@ -146,7 +145,7 @@ export default function Home() {
 
     const [footer, setFooter] = useState<'leds' | 'animations' | 'settings'>('leds');
 
-    const { showNotification, notificationProps } = useNotification();
+    const { addNotification } = useNotification();
 
     function getNewLedStrip(): LedStrip {
         const highestId = ledStrips.length > 0
@@ -154,6 +153,15 @@ export default function Home() {
             : -1;
         return createDefaultLedStrip(highestId + 1);
     }
+
+    const saveData = useCallback(async () => {
+        try {
+            await save(ledStrips);
+            addNotification("Settings saved successfully!", "success");
+        } catch (err) {
+            addNotification("Failed to save settings", "error");
+        }
+    }, [ledStrips, addNotification]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -282,15 +290,10 @@ export default function Home() {
                         { name: "LED", isSelected: footer === 'leds', onClick: () => { setFooter("leds") } },
                         { name: "Animations", isSelected: footer === 'animations', onClick: () => { setFooter("animations") } },
                         {
-                            icon: <SaveButton />, isSelected: false, onClick: () => {
-                                save(ledStrips);
-                                showNotification("KURVA", "success");
-                            }
+                            icon: <SaveButton />, isSelected: false, onClick: saveData
                         },
                         // {name: "S", isSelected: false, onClick: () => {console.log("Save data"); save(ledStrips) }, isActionButton: true }
                     ]} />
-
-                    {notificationProps && <NotificationPopup {...notificationProps} />}
 
                     {footer === 'leds' && (
                         <LedStripsPage
@@ -328,6 +331,13 @@ export default function Home() {
                             }}
                         />
                     )}
+
+                    <NotificationContainer />
+                    {/* <div className='fixed left-0 right-0 top-0 bottom-60 mt-10 flex flex-col gap-4 overflow-scroll max-h-full w-full hide-scrollbar p-2 items-center'>
+                        {notifications.map((notif) => (
+                            <KobaNotification key={notif.id} type={notif.type} content={notif.content} progress={notif.progress} onClick={() => removeNotification(notif.id)} />
+                        ))}
+                    </div> */}
                 </div>
             </div>
         </div>
